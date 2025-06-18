@@ -3,6 +3,17 @@ from pico_i2c_lcd import I2cLcd
 from ds3231 import DS3231
 import utime
 import time
+from ota_updater import OTAUpdater
+import machine
+
+def check_for_update():
+    OTAUpdater('https://github.com/QuimTP/pico-ota-micropython').download_and_install_update_if_available('main')
+
+check_for_update()
+
+# Aquí el teu codi principal
+print("Hola, món! Codi actualitzat.")
+
 
 # --- CONFIGURACIÓ ---
 I2C_SDA = 0
@@ -46,3 +57,4 @@ while True:
         print("Error:", e)
 
     utime.sleep(60)
+
