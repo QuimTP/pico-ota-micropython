@@ -46,4 +46,3 @@ while True:
         print("Error:", e)
 
     utime.sleep(60)
-
