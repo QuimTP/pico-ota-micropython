@@ -1,60 +1,52 @@
-from machine import I2C, Pin
-from pico_i2c_lcd import I2cLcd
-from ds3231 import DS3231
+from machine import Pin, I2C
 import utime
-import time
-from ota_updater import OTAUpdater
-import machine
+import dht
+from ds3231 import DS3231
 
-def check_for_update():
-    OTAUpdater('https://github.com/QuimTP/pico-ota-micropython').download_and_install_update_if_available('main')
+# Sensor DHT11
+dht_sensor = dht.DHT11(Pin(2))
 
-check_for_update()
+# LEDs GPIO7–10
+led_pins = [Pin(i, Pin.OUT) for i in range(7, 11)]
 
-# Aquí el teu codi principal
-print("Hola, món! Codi actualitzat.")
+# Botons GPIO3–6 i 11–14
+button_gpios = [3, 4, 5, 6, 11, 12, 13, 14]
+button_pins = [Pin(gpio, Pin.IN, Pin.PULL_UP) for gpio in button_gpios]
 
-
-# --- CONFIGURACIÓ ---
-I2C_SDA = 0
-I2C_SCL = 1
-LCD_ADDR = 0x3F  # o 0x27 si cal
-LCD_ROWS = 2
-LCD_COLS = 16
-
-# --- INICIALITZACIÓ ---
-i2c = I2C(0, sda=Pin(I2C_SDA), scl=Pin(I2C_SCL), freq=400000)
-lcd = I2cLcd(i2c, LCD_ADDR, LCD_ROWS, LCD_COLS)
+# RTC DS3231 a I2C0 (SDA=0, SCL=1)
+i2c = I2C(0, scl=Pin(1), sda=Pin(0))
 rtc = DS3231(i2c)
 
-# Obté la data i hora actual del PC via Thonny
-t = time.localtime()
-# Format: (any, mes, dia, hora, minut, segon, 0, 0)
-rtc.set_time((t[0], t[1], t[2], t[3], t[4], t[5], 0, 0))
+# (Opcional) Estableix hora si cal (només 1 cop)
+# rtc.set_time(2025, 7, 7, 12, 0, 0)
 
-print("Hora sincronitzada amb l'ordinador!")
-print("Nou valor RTC:", rtc.get_time())
-
-
-# --- BUCLE PRINCIPAL ---
-while True:
+def llegir_dht():
     try:
-        # Hora i temperatura del DS3231
-        temp = rtc.get_temperature()
-        y, m, d, h, mi, s = rtc.get_time()
-
-        # Escriure a l'LCD
-        lcd.clear()
-        lcd.move_to(0, 0)
-        lcd.putstr("  Temp: {:.2f}C".format(temp))
-
-        lcd.move_to(0, 1)
-        lcd.putstr("  {:02d}:{:02d}  {:02d}/{:02d}  ".format(h, mi, d, m))
-
+        dht_sensor.measure()
+        t = dht_sensor.temperature()
+        h = dht_sensor.humidity()
+        return t, h
     except Exception as e:
-        lcd.clear()
-        lcd.putstr("Error RTC/Temp")
-        print("Error:", e)
+        print("Error DHT11:", e)
+        return None, None
 
-    utime.sleep(60)
+while True:
+    y, m, d, hh, mm, ss = rtc.get_time()
+    temps_str = "{:02d}/{:02d}/{} {:02d}:{:02d}:{:02d}".format(d, m, y, hh, mm, ss)
+    print("Hora RTC:", temps_str)
+
+    t, h = llegir_dht()
+    if t is not None:
+        print("Temp: {}°C | Hum: {}%".format(t, h))
+
+    boto_estats = [not b.value() for b in button_pins]
+
+    for i, estat in enumerate(boto_estats):
+        print("Botó {}: {}".format(i + 1, "PREMUT" if estat else "lliure"))
+
+    for i in range(4):
+        led_pins[i].value(boto_estats[i])
+
+    print("-" * 40)
+    utime.sleep(1)
 
