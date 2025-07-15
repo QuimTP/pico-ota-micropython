@@ -68,6 +68,7 @@ def mostrar_lcds(temp, humitat, hora):
     lcd2004.clear()
     lcd1602.putstr("Temp:{}C\nHum:{}%".format(temp, humitat))
     lcd2004.putstr("Hora: {}\nTemp:{}C\nHum:{}%".format(hora, temp, humitat))
+    lcd2004.putstr('HOLA PIROLACONYAS')
 
 while True:
     try:
