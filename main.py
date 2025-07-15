@@ -2,7 +2,7 @@ import ugit
 from machine import Pin
 import time
 
-pin = Pin(3,Pin.IN,Pin.PULL_UP)
+pin = Pin(3,Pin.IN,Pin.PULL_DOWN)
 if pin.value() is 0:
     ugit.pull_all() 
 
