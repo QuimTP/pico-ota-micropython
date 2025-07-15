@@ -66,8 +66,22 @@ def llegir_botons():
 def mostrar_lcds(temp, humitat, hora):
     lcd1602.clear()
     lcd2004.clear()
-    lcd1602.putstr("Temp:{}C\nHum:{}%".format(temp, humitat))
-    lcd2004.putstr('HOLA PIROLACONYAS')
+
+    # Posar cursor a (0,1) i escriure el text a lcd1602
+    lcd1602.set_cursor(1, 0)  # columna 1, fila 0 (segona posició de la primera fila)
+    lcd1602.putstr("HOLA PIROLACONYAS")
+
+    # Posar cursor a (0,1) i escriure el text a lcd2004
+    lcd2004.set_cursor(1, 0)  # igual, columna 1, fila 0
+    lcd2004.putstr("HOLA PIROLACONYAS")
+
+    # Mostrar dades (per exemple, a la fila 2)
+    lcd1602.set_cursor(0, 1)
+    lcd1602.putstr("T:{}C H:{}%".format(temp, humitat))
+
+    lcd2004.set_cursor(0, 2)
+    lcd2004.putstr("Hora: {}".format(hora))
+
 
 while True:
     try:
