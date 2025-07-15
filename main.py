@@ -5,7 +5,7 @@ import time
 ugit.pull_all() 
 
 #main code here
-TIME_MS=5
+TIME_MS=100
 LED = Pin("LED", Pin.OUT)
 while True:
     LED.off()
