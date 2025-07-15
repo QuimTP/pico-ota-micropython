@@ -2,13 +2,15 @@ import ugit
 from machine import Pin
 import time
 
-pin = Pin(3,Pin.IN,Pin.PULL_DOWN)
+LED = Pin("LED", Pin.OUT)
+
+pin = Pin(5,Pin.IN,Pin.PULL_DOWN)
 if pin.value() is 0:
+    LED.on()
     ugit.pull_all() 
 
 #main code here
 TIME_MS=200
-LED = Pin("LED", Pin.OUT)
 while True:
     LED.off()
     time.sleep_ms(TIME_MS)
