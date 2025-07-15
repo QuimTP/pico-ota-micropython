@@ -2,10 +2,22 @@ import ugit
 from machine import Pin
 import time
 
-ugit.pull_all() 
+pin = Pin(3,Pin.IN,Pin.PULL_UP)
+if pin.value() is 0:
+    ugit.pull_all()
+pin = Pin(4,Pin.IN,Pin.PULL_UP)
+if pin.value() is 0:
+    ugit.pull_all() 
+pin = Pin(5,Pin.IN,Pin.PULL_UP)
+if pin.value() is 0:
+    ugit.pull_all() 
+pin = Pin(6,Pin.IN,Pin.PULL_UP)
+if pin.value() is 0:
+    ugit.pull_all() 
+
 
 #main code here
-TIME_MS=100
+TIME_MS=500
 LED = Pin("LED", Pin.OUT)
 while True:
     LED.off()
