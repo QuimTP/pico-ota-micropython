@@ -92,3 +92,4 @@ while True:
     revisar_ota(estats_botons)
     sleep(0.1)
 
+
