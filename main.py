@@ -18,6 +18,9 @@ else:
 def revisar_ota(estats_botons):
     if estats_botons[1]:
         print("🔄 Actualitzant via OTA...")
+        lcd1602.clear()
+        lcd1602.putstr("OTA iniciada")
+
         try:
             ugit.pull_all()
             print("✅ Actualització completada. Reiniciant...")
@@ -37,6 +40,8 @@ RTC_ADDR = devices[2]
 lcd1602 = I2cLcd(i2c, LCD1602_ADDR, 2, 16)
 lcd2004 = I2cLcd(i2c, LCD2004_ADDR, 4, 20)
 
+lcd1602.clear()
+lcd1602.putstr("Inici")
 # RTC DS3231
 rtc = DS3231(i2c)
 
